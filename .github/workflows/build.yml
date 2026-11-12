@@ -1,9 +1,13 @@
-name: Build CustomCamera APK
+name: Build & Release CustomCamera APK
 
 on:
   push:
     branches: [ "main", "master" ]
   workflow_dispatch:
+
+# Cấp quyền cho GitHub Actions được phép tạo Release và gắn Tag trên repo
+permissions:
+  contents: write
 
 jobs:
   build:
@@ -24,10 +28,24 @@ jobs:
           gradle-version: '7.6.1'
 
       - name: Build Debug APK
-        run: gradle assembleDebug
+        run: |
+          gradle assembleDebug
+          cp app/build/outputs/apk/debug/app-debug.apk CustomCamera-v4.0-b${{ github.run_number }}.apk
 
       - name: Upload APK Artifact
         uses: actions/upload-artifact@v4
         with:
           name: CustomCamera-APK
-          path: app/build/outputs/apk/debug/app-debug.apk
+          path: CustomCamera-v4.0-b${{ github.run_number }}.apk
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v4.0.${{ github.run_number }}
+          name: "Custom Camera v4.0 (Build #${{ github.run_number }})"
+          body: |
+            Bản build APK tự động từ commit `${{ github.sha }}`.
+            - Tải trực tiếp file `.apk` bên dưới phần **Assets** để cài đặt trên Android 9.
+          files: CustomCamera-v4.0-b${{ github.run_number }}.apk
+          draft: false
+          prerelease: false
