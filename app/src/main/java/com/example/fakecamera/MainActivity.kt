@@ -263,8 +263,7 @@ class MainActivity : AppCompatActivity() {
             val stateLabel = if (isUsed) "Đã dùng ở vòng này" else "Chưa dùng (Sẵn sàng)"
             val infoText = TextView(this).apply {
                 layoutParams = LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f)
-                text = "Ảnh #${index + 1} (${file.length() / 1024} KB)
-$stateLabel"
+                text = "Ảnh #${index + 1} (${file.length() / 1024} KB)\n$stateLabel"
                 textSize = 14f
                 setTextColor(if (isUsed) Color.GRAY else Color.BLACK)
             }
